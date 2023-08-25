@@ -3,10 +3,12 @@ const bcrypt = require("bcrypt");
 
 module.exports = class AuthRegisterUserController{
     static async init(req,res){
-        res.json({message:"Bem-vindo a API"});
+        //res.json({message:"Bem-vindo a API"});
+        res.render("Home");
     }
 
     static async registerUser(req,res){
+
         const {
             name,
             email,
@@ -21,15 +23,19 @@ module.exports = class AuthRegisterUserController{
         }
         if(!name){
             return res.status(422).json({message:"Não pode deixar de escrever seu nome"})
-        }else if(!email){
+        }
+        if(!email){
             return res.status(422).json({message:"Cadastre um email corretamente"});
-        }else if(!age){
+        }
+        if(!age){
             return res.status(422).json({message:"Digite a sua idade"});
-        }else if(!password){
+        }
+        if(!password){
             return res.status(422).json({message:"É necessário criar uma senha"});
-        }else if(password !== confirmPassword){
+        }
+        if(password !== confirmPassword){
             return res.status(422).json({message:"As senhas devem ser idênticas"});
-        }else{
+        }
 
             const userEmailExist = await User.findOne({email:email});
 
@@ -48,10 +54,9 @@ module.exports = class AuthRegisterUserController{
             });
             try{
                 await user.save();
-                res.status(201).json({message:"Usuário cadastrado com sucesso!",user});
+                res.redirect('/');
             }catch(error){
                 res.status(500).json({message:`Ocorreu um error ${error} ao cadastrar o usuário`})
             }
-        }
     }
 }
